@@ -34,6 +34,16 @@ flatten(G::SparseMatrixCSC{Events,Int}) =
     SparseMatrixCSC(G.m,G.n,G.colptr,G.rowval,ones(Int,length(G.nzval)))
 flatten(dy::DynamicNetwork) = Network(flatten(dy.G), dy.nodes)
 
+function events2dynet(I, J, V, n, nodes; makesymmetric=true)
+    if makesymmetric
+        G = sparse(vcat(I,J),vcat(J,I),vcat(V,V),n,n,fixevents)
+    else
+        G = sparse(I,J, V, n, n, fixevents)
+    end
+    DynamicNetwork(G,nodes)
+end
+
 include("io.jl")
+include("iodynet.jl")
 
 end # module

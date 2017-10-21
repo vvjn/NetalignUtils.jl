@@ -50,16 +50,16 @@ readgw(file::AbstractString) = open(readgw, file, "r")
 """
     Read list of edges and create network form it (undirected graph)
 """    
-function readedgelist(fd::IO, header=false)
+function readedgelist(fd::IO; header=false)
     nodes = Set{String}()
-    edges = []
+    edges = Vector{Tuple{String,String}}()
     header && readline(fd)
     while !eof(fd)
         line = readskipping(fd)
         isempty(line) && continue
         vals = split(strip(line))
         length(vals)!=2 && error("length")
-        push!(edges,vals)
+        push!(edges,(vals[1],vals[2]))
         push!(nodes,vals[1])
         push!(nodes,vals[2])
     end
@@ -78,7 +78,8 @@ function readedgelist(fd::IO, header=false)
     Network(G,nodes)
 end
 
-readedgelist(file::AbstractString) = open(readedgelist, file, "r")
+readedgelist(file::AbstractString; args...) =
+    open(x -> readedgelist(x;args...), file, "r")
 
 function writeedgelist(fd::IO, st::Network; prefix="",suffix="")
     G = st.G
@@ -117,6 +118,6 @@ function writegw(fd::IO, st::Network)
     end
 end
 
-function writegw(filename::AbstractString, st::Network)
-    open(filename,"w") do fd writegw(fd, st) end
-end
+writegw(filename::AbstractString, st::Network) =
+    open(fd -> writegw(fd,st), filename,"w")
+
