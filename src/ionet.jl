@@ -74,6 +74,7 @@ function readedgelist(fd::IO; header=false)
         push!(I, n1)
         push!(J, n2)
     end
+    nverts = length(nodes)
     G = sparse(vcat(I,J), vcat(J,I), 1, nverts, nverts, max)
     Network(G,nodes)
 end

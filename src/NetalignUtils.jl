@@ -4,7 +4,7 @@ module NetalignUtils
 
 using NetalignMeasures
 
-export Network, DynamicNetwork, flatten
+export Network, DynamicNetwork, flatten, events2dynet
 
 immutable Network
     G :: SparseMatrixCSC{Int,Int}
@@ -43,7 +43,10 @@ function events2dynet(I, J, V, n, nodes; makesymmetric=true)
     DynamicNetwork(G,nodes)
 end
 
-include("io.jl")
+include("ionet.jl")
 include("iodynet.jl")
+include("iomeasures.jl")
+include("ioaln.jl")
+include("iomatrix.jl")
 
 end # module
