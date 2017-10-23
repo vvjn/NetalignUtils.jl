@@ -64,7 +64,7 @@ function readedgelist(fd::IO; header=false)
         push!(nodes,vals[2])
     end
     nodes = collect(nodes)
-    nodesnum = Dict(node => i for (i,node) = enumerate(nodes))
+    nodesnum = indexmap(nodes)
     I = Vector{Int}()
     J = Vector{Int}()
     for vals in edges

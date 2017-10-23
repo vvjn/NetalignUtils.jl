@@ -1,16 +1,16 @@
 export readgdv, writegdv
 
 " read file outputted by the ncount gdv program in GraphCrunch"
-function readgdv(filename, nodesidx::Dict{<:AbstractString,Int})
-    A = open(fd -> readdlm(fd,Any),filename,"r")
+function readgdv(fd::IO, nodesidx::Dict{<:AbstractString,Int})
+    A = readdlm(fd,Any)
     X = zeros(Float64, (size(A,1),size(A,2)-1))
     X[map(i -> nodesidx[string(A[i,1])], 1:size(A,1)),:] = A[:,2:end]
     X
 end
-
-function readgdv(filename, nodes::Vector{<:AbstractString})
-    readgdv(filename, Dict{String,Int}(nodes => i for (i,nodes) in enumerate(nodes)))
-end
+readgdv(fd::IO, nodes::Vector{<:AbstractString}) =
+    readgdv(fd, indexmap(nodes))
+readgdv(file::AbstractString,args...) =
+    open(fd -> readgdv(fd,args...), file, "r")
 
 function writegdv(fd::IO, X::AbstractMatrix, nodes::AbstractVector)
     for i = 1:size(X,1)
@@ -24,6 +24,5 @@ function writegdv(fd::IO, X::AbstractMatrix, nodes::AbstractVector)
         end
     end
 end
-
 writegdv(file::AbstractString, args...) =
     open(fd -> writegdv(fd, args...), file, "w")

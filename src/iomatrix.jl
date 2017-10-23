@@ -17,8 +17,8 @@ if you have a node not in nodes1 or nodes2 resp.
 """
 function readspmat(fd::IO, nodes1::Vector, nodes2::Vector;
                    header=false, ignoreunmatched=false, minval=-Inf)
-    nodes1 = Dict(node=>i for (i,node) = enumerate(nodes1))
-    nodes2 = Dict(node=>i for (i,node) = enumerate(nodes2))
+    nodes1 = indexmap(nodes1)
+    nodes2 = indexmap(nodes2)
     I = Int[]
     J = Int[]
     V = Float64[]
@@ -44,8 +44,8 @@ Stores matrix in B
 """
 function readspmat!(fd::IO, B::AbstractMatrix, nodes1::Vector, nodes2::Vector;
                     header=false, ignoreunmatched=false, minval=-Inf)
-    nodes1 = Dict(node=>i for (i,node) = enumerate(nodes1))
-    nodes2 = Dict(node=>i for (i,node) = enumerate(nodes2))
+    nodes1 = indexmap(nodes1)
+    nodes2 = indexmap(nodes2)
     header && readline(fd)
     for line in eachline(fd)
         vals = split(strip(line))

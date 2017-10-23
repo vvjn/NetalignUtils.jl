@@ -36,7 +36,7 @@ function readeventlist(fd::IO; makesymmetric=true, header=false,
     if sortby!=nothing
         nodes = sort(nodes,by=sortby)
     end
-    nodesnum = Dict(node => i for (i,node) = enumerate(nodes))
+    nodesnum = indexmap(nodes)
     edges = Matrix{Int}(length(events),2)
     timestamps = Vector{Events}(length(events))
     for i = 1:length(events)

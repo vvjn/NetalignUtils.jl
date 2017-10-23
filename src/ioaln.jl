@@ -1,4 +1,19 @@
-export readaln, aln2perm
+export readaln, aln2perm, readseeds
+
+"Outputs n x 2 matrix od node indices
+associates with nodes1 and nodes2"
+function readseeds(file::AbstractString,
+                   nodes1::AbstractVector,nodes2::AbstractVector)
+    aln = readdlm(file,String)
+    d1 = indexmap(nodes1)
+    d2 = indexmap(nodes2)
+    paln = zeros(Int,size(aln))
+    for i = 1:size(paln,1)
+        paln[i,1] = d1[aln[i,1]]
+        paln[i,2] = d2[aln[i,2]]
+    end
+    paln
+end
 
 """
 Read alignment file for pairwise network alignment.  Each line will
@@ -29,8 +44,8 @@ function aln2perm(aln,nodes1,nodes2)
     m = length(nodes1)
     n = length(nodes2)
     if size(aln,1)!=m error("Need aln size to match") end
-    d1 = Dict(nodes => i for (i,nodes) in enumerate(nodes1)) # name => idx maps
-    d2 = Dict(nodes => i for (i,nodes) in enumerate(nodes2))
+    d1 = indexmap(nodes1)
+    d2 = indexmap(nodes2)
     p = zeros(Int, n)
     for i = 1:m
         p[d1[aln[i,1]]] = d2[aln[i,2]]
@@ -63,3 +78,4 @@ end
 
 writepaln(file::AbstractString, args...) =
     open(fd -> writepaln(fd,args...), file,"w")
+
