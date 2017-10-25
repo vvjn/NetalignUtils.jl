@@ -1,6 +1,6 @@
-site_name:        IsoRank.jl
-repo_url:         https://github.com/vvjn/IsoRank.jl
-site_description: IsoRank
+site_name:        NetalignUtils.jl
+repo_url:         https://github.com/vvjn/NetalignUtils.jl
+site_description: NetalignUtils
 site_author:      vvjn
 theme: readthedocs
 

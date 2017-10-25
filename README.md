@@ -6,7 +6,7 @@ Functions to read/write static and dynamic networks. Plus, other utility functio
 
 ## Installation
 
-IsoRank can be installed as follows.
+NetalignUtils can be installed as follows.
 
 ```julia
 Pkg.clone("https://github.com/vvjn/NetalignUtils.jl")
