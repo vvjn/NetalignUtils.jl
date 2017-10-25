@@ -1,13 +1,21 @@
 export readeventlist, writeeventlist
 
 """
-returns graph as sparse matrix
-with values on the top right triangle if makesymmetric is false
-    format: start_time stop_time node1 node2
-    formatflipped: node1 node2 start_time stop_time
+    readeventlist(fd::IO; <keyword args>)
+    readeventlist(file::AbstractString; <keyword args>) -> SparseMatrixCSC{Events}, node list
+
+Read list of events from file returns undirected dynamic network represented as sparse matrix.
+An event is an interaction between two nodes from start time to stop time.
+
+# Keyword arguments
+- `symmetric=true` : If false, only fill the top right triangle, else make resulting matrix symmetric.
+- `header=false` : If true, ignore first line.
+- `sortby=nothing`: If not `nothing`, sort nodes w.r.t this function (`by` argument in `sort`).
+- `format=:timefirst` : If `format=:timefirst`, each line has format (`start_time stop_time node1 node2`).
+    If `format=:nodefirst`, each line has format (`node1 node2 start_time stop_time`).
 """
-function readeventlist(fd::IO; makesymmetric=true, header=false,
-                       sortby=nothing, formatflipped=false)
+function readeventlist(fd::IO; symmetric=true, header=false,
+                       sortby=nothing, format=:timefirst)
     nodes = Set{String}()
     events = Vector{Tuple{String,String,Float64,Float64}}()
     if header
@@ -18,7 +26,7 @@ function readeventlist(fd::IO; makesymmetric=true, header=false,
         if isempty(line); continue; end
         vals = split(strip(line))
         if length(vals)==4
-            if formatflipped
+            if format==:nodefirst
                 vals = vals[[3,4,1,2]]
             end
             t_s = parse(Float64,vals[1])
@@ -49,15 +57,23 @@ function readeventlist(fd::IO; makesymmetric=true, header=false,
     end
     events2dynet(edges[:,1], edges[:,2], timestamps,
                  length(nodes), nodes,
-                 makesymmetric=makesymmetric)
+                 symmetric=symmetric)
 end
-
 readeventlist(file::AbstractString; args...) =
     open(x -> readeventlist(x;args...), file, "r")
 
+"""
+    writeeventlist(fd::IO, dy::DynamicNetwork; <keyword args>)
+    writeeventlist(file::AbstractString, dy::DynamicNetwork; <keyword args>)
 
-# write temporal network to file
-function writeeventlist(fd::IO, dy::DynamicNetwork; formatflipped=false)
+Write list of events to file from undirected dynamic network represented as sparse matrix.
+An event is an interaction between two nodes from start time to stop time.
+
+# Keyword arguments
+- `format=:timefirst` : If `format=:timefirst`, each line has format (`start_time stop_time node1 node2`).
+    If `format=:nodefirst`, each line has format (`node1 node2 start_time stop_time`).
+"""    
+function writeeventlist(fd::IO, dy::DynamicNetwork; format=:timefirst)
     G = dy.G
     nodes = d.nodes
     m,n = size(G)
@@ -66,7 +82,7 @@ function writeeventlist(fd::IO, dy::DynamicNetwork; formatflipped=false)
             row = G.rowval[j]
             val = G.nzval[j]
             for x in val
-                if formatflipped
+                if format==:nodefirst
                     println(fd, nodes[row], " ", nodes[col], " ", x[1], " ", x[2])
                 else
                     println(fd, x[1], " ", x[2], " ", nodes[row], " ", nodes[col])
@@ -75,7 +91,5 @@ function writeeventlist(fd::IO, dy::DynamicNetwork; formatflipped=false)
         end
     end
 end
-
-writeeventlist(file::AbstractString, dy::DynamicNetwork,
-               formatflipped=false) =
-    open(fd -> writeeventlist(fd,dy,formatflipped), file, "w")
+writeeventlist(file::AbstractString, args...) =
+    open(fd -> writeeventlist(fd,args...), file, "w")

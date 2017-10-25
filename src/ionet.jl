@@ -1,8 +1,8 @@
 export readgw, readedgelist, writegw, writeedgelist
 
 """
-return line after skipping if pred(line) is true
-default: after skipping empty lines and commented lines
+Return line after skipping if pred(line) is true
+Default pred: after skipping empty lines and commented lines
 """
 function readskipping(fd::IO,
                       pred=line -> length(line)==0 || line[1]=='#' || line[1]=='%')
@@ -15,8 +15,11 @@ function readskipping(fd::IO,
 end
 
 """
-Reads a LEDA format file (undirected graph)
-example is in test/
+    readgw(fd::IO)
+    readgw(file::AbstractString) -> SparseMatrixCSC, node list
+    
+Reads LEDA format file describing a network. Outputs an undirected network.
+An example of a LEDA file is in the examples/ directory.
 """
 function readgw(fd::IO)
     line = readskipping(fd)
@@ -43,12 +46,13 @@ function readgw(fd::IO)
     G = sparse(vcat(I,J), vcat(J,I), 1, nverts, nverts, max)
     return Network(G,vertices)
 end
-
-readgw(file::AbstractString) = open(readgw, file, "r")
-
+readgw(file::AbstractString, args...) = open(fd -> readgw(fd,args...), file, "r")
 
 """
-    Read list of edges and create network form it (undirected graph)
+    readedgelist(fd::IO; header=false)
+    readedgelist(file::AbstractString; header=false) -> SparseMatrixCSC, node list
+    
+Read list of edges and output undirected network
 """    
 function readedgelist(fd::IO; header=false)
     nodes = Set{String}()
@@ -78,10 +82,17 @@ function readedgelist(fd::IO; header=false)
     G = sparse(vcat(I,J), vcat(J,I), 1, nverts, nverts, max)
     Network(G,nodes)
 end
-
 readedgelist(file::AbstractString; args...) =
     open(x -> readedgelist(x;args...), file, "r")
 
+"""
+    writeedgelist(fd::IO, st::Network; prefix="",suffix="")
+    writeedgelist(file::AbstractString, st::Network; prefix="",suffix="")
+
+Write network to file as list of edges.
+
+- `prefix`,`suffix` : Prefix and suffix to each line.    
+"""    
 function writeedgelist(fd::IO, st::Network; prefix="",suffix="")
     G = st.G
     nodes = st.nodes
@@ -95,10 +106,15 @@ function writeedgelist(fd::IO, st::Network; prefix="",suffix="")
         end
     end
 end
+writeedgelist(file::AbstractString, args...) =
+    open(fd -> writeedgelist(fd, args...), file, "w")
 
-writeedgelist(file::AbstractString, st::Network; args...) =
-    open(fd -> writeedgelist(fd, st; args...), file, "w")
+"""
+    writegw(fd::IO, st::Network)
+    writegw(file::AbstractString, st::Network)
 
+Write undirected network to file as LEDA format.
+"""    
 function writegw(fd::IO, st::Network)
     G = st.G
     gnodes = st.nodes
@@ -118,7 +134,5 @@ function writegw(fd::IO, st::Network)
         end
     end
 end
-
-writegw(filename::AbstractString, st::Network) =
-    open(fd -> writegw(fd,st), filename,"w")
-
+writegw(filename::AbstractString, args...) =
+    open(fd -> writegw(fd,args...), filename,"w")

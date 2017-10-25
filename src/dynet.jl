@@ -1,8 +1,14 @@
-export flatten, events2dynet
+export flatten, events2dynet, snapshots2dynet
 
 """
-Convert dynamic network to static network
-where each dynamic edge corresponds to a static edge with weight 1
+    flatten(G::SparseMatrixCSC{<:Number,Int})
+    flatten(G::SparseMatrixCSC{Events,Int})
+    flatten(nt::Network)
+    flatten(dy::DynamicNetwork)
+
+Convert dynamic network to a static network, where each dynamic edge
+corresponds to a static edge with weight 1. It does not make a copy of the
+network (so, the sparse matrix indices will be shared).
 """
 flatten(G::SparseMatrixCSC{<:Number,Int}) = G
 flatten(G::SparseMatrixCSC{Events,Int}) =
@@ -10,7 +16,19 @@ flatten(G::SparseMatrixCSC{Events,Int}) =
 flatten(nt::Network) = nt
 flatten(dy::DynamicNetwork) = Network(flatten(dy.G), dy.nodes)
 
-function events2dynet(I, J, V, n, nodes; makesymmetric=true)
+"""
+    events2dynet(I, J, V, n, nodes; symmetric=true) -> SparseMatrixCSC{Events}, nodes
+
+Similar to `sparse`, given indices and values, create
+an dynamic network.
+
+# Arguments
+- `n` : # of nodes in network
+- `I`,`J`: indices
+- `V` : vector of `Events`
+- `symmetric=true` : If true, make the sparse matrix symmetric.
+"""
+function events2dynet(I, J, V, n, nodes; symmetric=true)
     if makesymmetric
         G = sparse(vcat(I,J),vcat(J,I),vcat(V,V),n,n,fixevents)
     else
@@ -20,11 +38,15 @@ function events2dynet(I, J, V, n, nodes; makesymmetric=true)
 end
 
 """
-Convert snapshots into dynamic network with event duration 1
-and time starting at 0
+    snapshots2dynet(snaps::Vector{Network};
+              symmetric=false,sortby=nothing)
+
+Converts a vector of networks (i.e. temporal snapshots)
+into a dynamic network with event duration 1
+and time starting at 0.
 """
 function snapshots2dynet(snaps::Vector{Network};
-                                 makesymmetric=false,sortby=nothing)
+                                 symmetric=false,sortby=nothing)
     nodes = Set{String}()
     events = Vector{Tuple{String,String,Float64,Float64}}()
     for t = 1:length(snaps)

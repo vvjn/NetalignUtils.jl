@@ -1,6 +1,17 @@
 # NetalignUtils
 
-[![Build Status](https://travis-ci.org/vvjn/NetalignUtils.jl.svg?branch=master)](https://travis-ci.org/vvjn/NetalignUtils.jl) [![Coverage Status](https://coveralls.io/repos/vvjn/NetalignUtils.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/vvjn/NetalignUtils.jl?branch=master) [![codecov.io](http://codecov.io/github/vvjn/NetalignUtils.jl/coverage.svg?branch=master)](http://codecov.io/github/vvjn/NetalignUtils.jl?branch=master)
+[![Build Status](https://travis-ci.org/vvjn/NetalignUtils.jl.svg?branch=master)](https://travis-ci.org/vvjn/NetalignUtils.jl) [![codecov.io](http://codecov.io/github/vvjn/NetalignUtils.jl/coverage.svg?branch=master)](http://codecov.io/github/vvjn/NetalignUtils.jl?branch=master) [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://vvjn.github.io/NetalignUtils.jl/latest)
 
-Functions to read/write static and dynamic networks. Other utility functions
-to deal with static and dynamic networks.
+Functions to read/write static and dynamic networks. Plus, other utility functions to deal with static and dynamic networks.
+
+## Installation
+
+IsoRank can be installed as follows.
+
+```julia
+Pkg.clone("https://github.com/vvjn/NetalignUtils.jl")
+```
+
+# Documentation
+
+Available [here](https://vvjn.github.io/NetalignUtils.jl/latest).
