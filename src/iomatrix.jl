@@ -1,9 +1,9 @@
-export readlistmat, readlistmat!, readevalues
+export readlistmat, readlistmat!, readevalues, writelistmat
 
 """
     readlistmat(fd::IO, nodes1::Vector, nodes2::Vector; <keyword arguments>)
     readlistmat(file::AbstractString, nodes1::Vector, nodes2::Vector; <keyword arguments>)
-              
+
 Reads a numerical matrix stored in list format, where the first and second columns correspond
 to string vectors nodes1 and nodes2, respectively. E.g.
 
@@ -58,7 +58,7 @@ readlistmat(file::AbstractString,args...;vargs...) =
 """
     readlistmat!(fd::IO, B::AbstractMatrix, nodes1::Vector, nodes2::Vector; <keyword arguments>)
     readlistmat!(file::AbstractString, B::AbstractMatrix, nodes1::Vector, nodes2::Vector; <keyword arguments>)
-    
+
 Same as [`readlistmat`](@ref) but stores the result in B.
 """
 function readlistmat!(fd::IO, B::AbstractMatrix, nodes1::Vector{<:AbstractString},
@@ -81,3 +81,13 @@ readlistmat!(file::AbstractString,args...;vargs...) =
 readevalues(fd::IO, args...; vargs...) = readlistmat(fd, args...; missing=Inf, vargs...)
 readevalues(file::AbstractString,args...;vargs...) =
     open(fd -> readevalues(fd,args...;vargs...), file, "r")
+
+function writelistmat(fd::IO, S::SparseMatrixCSC, nodes1::Vector{<:AbstractString},
+                      nodes2::Vector{<:AbstractString})
+    I,J,V = findnz(S)
+    for (i,j,v) in zip(I,J,V)
+        println(fd, "$(nodes1[i]) $(nodes2[j]) $v")
+    end
+end
+writelistmat(file::AbstractString, args...;vargs...) =
+    open(fd -> writelistmat(fd, args...;vargs...), file, "w")
