@@ -1,4 +1,4 @@
-export readaln, readseeds, writealn, aln2perm
+export readaln, readseeds, writealn
 
 """
     readseeds(file::AbstractString,
@@ -47,6 +47,7 @@ end
 readaln(file::AbstractString, args...) =
     open(fd -> readaln(fd, args...), file, "r")
 
+import NetalignMeasures: aln2perm
 """
 Given aln :: n x 2 matrix of node names, 1st column from nodes1,
 second column from nodes2, convert to a permutation from nodes1 to
@@ -82,30 +83,6 @@ function aln2perm(aln::AbstractMatrix,nodes1::AbstractVector,nodes2::AbstractVec
         for i = 1:(n-m)
             p[m+i] = mapped_to[rp[i]]
         end
-    end
-    p
-end
-
-function aln2perm(f::AbstractVector{Int},n::Integer)
-    m = length(f)
-    p = zeros(Int, n)
-    p[1:m] = f
-    mapped_to = zeros(Int,n)
-    for i = 1:n
-        if p[i] > 0
-            mapped_to[p[i]] = 1
-        end
-    end
-    j = 1
-    for i = 1:n
-        if mapped_to[i] == 0
-            mapped_to[j] = i
-            j += 1
-        end
-    end
-    rp = randperm(n-m)
-    for i = 1:(n-m)
-        p[m+i] = mapped_to[rp[i]]
     end
     p
 end

@@ -12,5 +12,6 @@ include("iodynet.jl")
 include("iomeasures.jl")
 include("ioaln.jl")
 include("iomatrix.jl")
+include("iogo.jl")
 
 end # module

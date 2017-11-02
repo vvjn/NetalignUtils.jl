@@ -1,5 +1,7 @@
 export Network, DynamicNetwork
 
+import Base: getindex, ==
+
 """
     immutable Network
         G :: SparseMatrixCSC{Int,Int}
@@ -17,6 +19,9 @@ immutable Network
         new(G,nodes)
     end
 end
+
+getindex(nt::Network, I::AbstractVector) = Network(nt.G[I,I], nt.nodes[I])
+==(t1::Network, t2::Network) = (t1.nodes == t2.nodes) && (t1.G == t2.G)
 
 """
     immutable DynamicNetwork
@@ -37,3 +42,8 @@ immutable DynamicNetwork
         new(G,nodes)
     end
 end
+
+getindex(nt::DynamicNetwork, I::AbstractVector) =
+    DynamicNetwork(nt.G[I,I], nt.nodes[I])
+==(t1::DynamicNetwork, t2::DynamicNetwork) =
+    (t1.nodes == t2.nodes) && (t1.G == t2.G)

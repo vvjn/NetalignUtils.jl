@@ -29,7 +29,7 @@ an dynamic network.
 - `symmetric=true` : If true, make the sparse matrix symmetric.
 """
 function events2dynet(I, J, V, n, nodes; symmetric=true)
-    if makesymmetric
+    if symmetric
         G = sparse(vcat(I,J),vcat(J,I),vcat(V,V),n,n,fixevents)
     else
         G = sparse(I,J, V, n, n, fixevents)
@@ -75,5 +75,5 @@ function snapshots2dynet(snaps::Vector{Network};
     end
     events2dynet(edges[:,1], edges[:,2], timestamps,
                  length(nodes), nodes,
-                 makesymmetric=makesymmetric)
+                 symmetric=symmetric)
 end
