@@ -17,7 +17,7 @@ end
 """
     readgw(fd::IO)
     readgw(file::AbstractString) -> SparseMatrixCSC, node list
-    
+
 Reads LEDA format file describing a network. Outputs an undirected network.
 An example of a LEDA file is in the examples/ directory.
 """
@@ -51,21 +51,23 @@ readgw(file::AbstractString, args...) = open(fd -> readgw(fd,args...), file, "r"
 """
     readedgelist(fd::IO; header=false)
     readedgelist(file::AbstractString; header=false) -> SparseMatrixCSC, node list
-    
+
 Read list of edges and output undirected network
-"""    
+"""
 function readedgelist(fd::IO; header=false)
     nodes = Set{String}()
     edges = Vector{Tuple{String,String}}()
     header && readline(fd)
+    iter = 1
     while !eof(fd)
         line = readskipping(fd)
         isempty(line) && continue
         vals = split(strip(line))
-        length(vals)!=2 && error("length")
+        length(vals)!=2 && error("Error reading file at line $iter. Formatting error?")
         push!(edges,(vals[1],vals[2]))
         push!(nodes,vals[1])
         push!(nodes,vals[2])
+        iter += 1
     end
     nodes = collect(nodes)
     nodesnum = indexmap(nodes)
@@ -91,8 +93,8 @@ readedgelist(file::AbstractString; args...) =
 
 Write network to file as list of edges.
 
-- `prefix`,`suffix` : Prefix and suffix to each line.    
-"""    
+- `prefix`,`suffix` : Prefix and suffix to each line.
+"""
 function writeedgelist(fd::IO, st::Network; prefix="",suffix="")
     G = st.G
     nodes = st.nodes
@@ -114,7 +116,7 @@ writeedgelist(file::AbstractString, args...) =
     writegw(file::AbstractString, st::Network)
 
 Write undirected network to file as LEDA format.
-"""    
+"""
 function writegw(fd::IO, st::Network)
     G = st.G
     gnodes = st.nodes
