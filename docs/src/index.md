@@ -14,6 +14,10 @@ NetalignUtils can be installed as follows.
 Pkg.clone("https://github.com/vvjn/NetalignUtils.jl")
 ```
 
+```@meta
+CurrentModule=NetalignUtils
+```
+
 # Types
 
 ```@docs
@@ -22,51 +26,57 @@ Network
 ```
 
 # Functions
-
 ## Dynamic networks
 
 ```@docs
-readeventlist(fd::IO; symmetric=true, header=false,
-              sortby=nothing, format=:timefirst)
-writeeventlist(fd::IO, dy::DynamicNetwork; format=:timefirst)
-events2dynet(I, J, V, n, nodes; symmetric=true)
-snapshots2dynet(snaps::Vector{Network};
- symmetric=false,sortby=nothing)
+readeventlist
+writeeventlist
+events2dynet
+snapshots2dynet
 ```
 
 ## Static networks
 
 ```@docs
-readgw(fd::IO)
-readedgelist(fd::IO; header=false)
-writeedgelist(fd::IO, st::Network; prefix="",suffix="")
-writegw(fd::IO, st::Network)
+readgw
+readedgelist
+writeedgelist
+writegw
 ```
 
 ## Alignments
 
 ```@docs
-nodecorrectness(f::AbstractVector{Int},
- nodes1::AbstractVector,nodes2::AbstractVector)
-readaln(fd::IO, nodes1::AbstractVector,
- nodes2::AbstractVector, flip=false)
-writealn(fd::IO, nodes1::AbstractVector, nodes2::AbstractVector)
-readseeds(fd::IO,
- nodes1::AbstractVector,nodes2::AbstractVector)
+nodecorrectness
+readaln
+writealn
+readseeds
 ```
 
 ## Matrices
 
 ```@docs
-readlistmat(fd::IO, nodes1::Vector{<:AbstractString}, nodes2::Vector{<:AbstractString};
-          header=false, ignore=false, minval=-Inf, dense=false)
-readlistmat!(fd::IO, B::AbstractMatrix, nodes1::Vector{<:AbstractString}, nodes2::Vector{<:AbstractString};
-                    header=false, ignore=false, minval=-Inf)
+readlistmat
+readlistmat!
 ```
 
 ## Network measures
 
 ```@docs
-readgdv(fd::IO, nodesidx::Dict)
-writegdv(fd::IO, X::AbstractMatrix, nodes::AbstractVector)
+readgdv
+writegdv
+```
+
+## Network generation
+```@docs
+SFGD
+GEOGD
+SocialNE
+rand
+```
+
+## Randomization
+```@docs
+strict_events_shuffle
+links_shuffle
 ```

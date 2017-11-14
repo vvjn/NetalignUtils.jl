@@ -1,7 +1,7 @@
 export nodecorrectness
 
 # name => idx map like in statsbase
-indexmap(nodes) = Dict(node => i for (i,node) in enumerate(nodes))
+# indexmap(nodes) = Dict(node => i for (i,node) in enumerate(nodes))
 
 """
     nodecorrectness(f::AbstractVector{Int},

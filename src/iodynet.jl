@@ -75,13 +75,13 @@ An event is an interaction between two nodes from start time to stop time.
 """    
 function writeeventlist(fd::IO, dy::DynamicNetwork; format=:timefirst)
     G = dy.G
-    nodes = d.nodes
+    nodes = dy.nodes
     m,n = size(G)
     for col = 1:n
         for j = nzrange(G,col)
             row = G.rowval[j]
             val = G.nzval[j]
-            for x in val
+            for x in val.timestamps
                 if format==:nodefirst
                     println(fd, nodes[row], " ", nodes[col], " ", x[1], " ", x[2])
                 else
