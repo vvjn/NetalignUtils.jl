@@ -1,2 +1,5 @@
 julia 0.6
-NetalignMeasures
+LightGraphs
+DataStructures
+Distributions
+StatsBase
