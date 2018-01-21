@@ -11,7 +11,7 @@ to deal with static and dynamic networks.
 NetalignUtils can be installed as follows.
 
 ```julia
-Pkg.clone("https://github.com/vvjn/NetalignUtils.jl")
+Pkg.add("NetalignUtils")
 ```
 
 ```@meta

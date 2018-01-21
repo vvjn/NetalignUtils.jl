@@ -9,7 +9,7 @@ Functions to read/write static and dynamic networks. Plus, other utility functio
 NetalignUtils can be installed as follows.
 
 ```julia
-Pkg.clone("https://github.com/vvjn/NetalignUtils.jl")
+Pkg.add("NetalignUtils")
 ```
 
 # Documentation
