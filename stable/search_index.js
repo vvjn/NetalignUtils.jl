@@ -29,7 +29,7 @@ var documenterSearchIndex = {"docs": [
     "page": "NetalignUtils documentation",
     "title": "Installation",
     "category": "section",
-    "text": "NetalignUtils can be installed as follows.Pkg.clone(\"https://github.com/vvjn/NetalignUtils.jl\")CurrentModule=NetalignUtils"
+    "text": "NetalignUtils can be installed as follows.Pkg.add(\"NetalignUtils\")CurrentModule=NetalignUtils"
 },
 
 {
